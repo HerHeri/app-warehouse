@@ -28,10 +28,13 @@
                         <div class="card">
                             <div class="card-header border-bottom row">
                                 <div class="col-6">
-                                    <h4 class="card-title">Daftar Barang</h4>
+                                    <h4 class="card-title">List Barang</h4>
                                 </div>
                                 <div class="col-6 text-end">
-                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" onclick="creditUser()">Tambah Barang</button>
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" onclick="creditBarang()">Tambah Barang</button>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <div class="demo-spacing-0" id="alert-report"></div>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -64,7 +67,7 @@
 @include('layouts.footer')
 
 <!-- Credit Modal users -->
-<div class="modal fade" id="creditUser" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="creditBarang" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-edit-user">
         <div class="modal-content p-2">
             <div class="modal-header bg-transparent">
@@ -72,30 +75,38 @@
             </div>
             <div class="modal-body pb-5 px-sm-2 pt-50">
                 <div class="text-center mb-2" id="title-modal">
-                    <h1 class="mb-1">Edit Notification</h1>
-                    <p>Updating notification details.</p>
+                    <h1 class="mb-1">Edit Barang</h1>
+                    <p>Updating barang details.</p>
                 </div>
-                <form id="creditUserForm" class="row gy-1 pt-75" action="javascript:void(0)">
+                <form id="creditBarangForm" class="row gy-1 pt-75" action="javascript:void(0)">
                     @csrf
-                    <input type="hidden" id="id-notif" name="notifid">
+                    <input type="hidden" id="idbarang" name="idbarang" autocomplete="false">
                     <div class="col-12">
-                        <label class="form-label" for="modalcreditUserName">Nama users</label>
-                        <input type="text" id="notifname" name="notifname" class="form-control" placeholder="Nama users" />
+                        <label class="form-label" for="namabarang">Nama barang</label>
+                        <input type="text" id="namabarang" name="namabarang" class="form-control" placeholder="Nama barang" />
                     </div>
                     <div class="col-12 col-md-6">
-                        <label class="form-label" for="notifstatus">Status</label>
-                        <select id="notifstatus" name="notifstatus" class="form-select" aria-label="Default select example">
+                        <label class="form-label" for="kodebarang">Kode Barang</label>
+                        <input type="text" id="kodebarang" name="kodebarang" class="form-control" placeholder="Kode barang" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="hargabarang">Harga Barang</label>
+                        <input type="text" id="hargabarang" name="hargabarang" class="form-control" placeholder="Harga barang" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="stockbarang">Stock Barang</label>
+                        <input type="text" id="stockbarang" name="stockbarang" class="form-control" placeholder="Stock barang" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="statusbarang">Status</label>
+                        <select id="statusbarang" name="statusbarang" class="form-select" aria-label="Default select example">
                             <option readonly>Pilih Status</option>
                             <option value="1">Active</option>
                             <option value="2">Inactive</option>
                         </select>
                     </div>
-                    <div class="col-12 col-md-12">
-                        <label class="form-label" for="notifmessage">Pesan Notifikasi</label>
-                        <textarea class="form-control" name="pesannotif" id="pesannotif" cols="30" rows="10"></textarea>
-                    </div>
                     <div class="col-12 text-center mt-2 pt-50">
-                        <button type="button" id="btn-submit-notif" class="btn btn-primary me-1">Submit</button>
+                        <button type="button" id="btn-submit" class="btn btn-primary me-1">Submit</button>
                         <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-label="Close">Discard</button>
                     </div>
                 </form>
@@ -168,82 +179,98 @@
                 orderable: false,
                 className: 'text-center',
                 render: (data, type, row, meta) => {
-                    let btnremove = `<button class="btn btn-primary btn-sm d-flex" onclick="removeUser('${row.id}')"><i class="fa fa-trash" style="font-size: 28px;"></i> <span> Remove</span></button>`
-                    let btncredit = `<button onclick="creditUser('${row.id}')" class="btn btn-success btn-sm d-flex"><i class="fa fa-eye" style="font-size: 28px;"></i><span> Edit</span></button>`
+                    let btnremove = `<button class="btn btn-danger btn-sm d-flex" onclick="deleteBarang('${row.id}')"><i class="fa fa-trash" style="font-size: 28px;"></i> <span> Remove</span></button>`
+                    let btncredit = `<button onclick="creditBarang('${row.id}')" class="btn btn-success btn-sm d-flex me-1"><i class="fa fa-eye" style="font-size: 28px;"></i><span> Edit</span></button>`
                     return `<div class="d-flex justify-content-center">
-                            ${btnremove} ${btncredit}
+                        ${btncredit} ${btnremove}
                         </div>`
                 }
             }
         ]
     });
 
-    function creditUser(id){
+    async function creditBarang(id){
         if(id){
             $('#title-modal').html(
-                `<h1 class="mb-1">Edit Notification</h1>
-                <p>Updating notification details.</p>`
+                `<h1 class="mb-1">Edit Barang</h1>
+                <p>Update barang details.</p>`
             )
-            $.ajax({
-                url: location.href + '?id=' + id,
-                success: function(res){
-                    $('#creditUser').modal('show')
-                    $('#id-notif').val(res.id)
-                    $('#notifname').val(res.name)
-                    $('#deviceid').val(res.device_id)
-                    $('#notifstatus').val(res.status)
-                    $('#pesannotif').val(res.message)
-                }
-            })
+            let barang = await apiCaller('/api/stock-barang/credit/'+id)
+            $('#idbarang').val(barang.data.id)
+            $('#namabarang').val(barang.data.nama_barang)
+            $('#hargabarang').val(barang.data.harga)
+            $('#kodebarang').val(barang.data.kode_barang)
+            $('#statusbarang').val(barang.data.status)
+            $('#stockbarang').val(barang.data.stock)
+            $('#creditBarang').modal('show')
         }else{
             $('#title-modal').html(
-                `<h1 class="mb-1">Create Notification</h1>
-                <p>Creating notification details.</p>`
+                `<h1 class="mb-1">Tambah Barang</h1>
+                <p>Tambah detail barang.</p>`
             )
-            $('#creditUserForm')[0].reset()
-            $('#creditUser').modal('show')
+            $('#idbarang').val('')
+            $('#creditBarangForm')[0].reset()
+            $('#creditBarang').modal('show')
         }
     }
 
-    $('#btn-submit-notif').on('click', function(e){
+    $('#btn-submit').on('click', async function(e){
         e.preventDefault()
         let data = {
-            'notifid' : $('#id-notif').val(),
-            'notifname' : $('#notifname').val(),
-            'deviceid' : $('#deviceid').val(),
-            'notifstatus' : $('#notifstatus').val(),
-            'message' : $('#pesannotif').val()
+            'idbarang' : $('#idbarang').val(),
+            'namabarang' : $('#namabarang').val(),
+            'hargabarang' : $('#hargabarang').val(),
+            'kodebarang' : $('#kodebarang').val(),
+            'statusbarang' : $('#statusbarang').val(),
+            'stockbarang' : $('#stockbarang').val(),
         }
-        $.ajax({
-            url: location.origin + '/notification/store',
-            method: 'POST',
-            data: data,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response){
-                tableBarang.ajax.reload()
-                $('#creditUser').modal('hide')
-                console.log(response);
-            },
-            error: function(response){
-                console.log('error :'+ response);
-            }
-        })
+        let html = ''
+        let submitBarang = await apiCaller('/api/stock-barang/store', 'POST', data)
+        if(submitBarang.status == true){
+            html = `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <div class="alert-body"><strong>Disimpan!</strong> ${submitBarang.message}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`
+        }else{
+            html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div class="alert-body"><strong>Gagal!</strong> ${submitBarang.message}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`
+        }
+        $('#creditBarang').modal('hide')
+        tableBarang.ajax.reload()
+        $('#alert-report').html(html)
     })
 
-    function removeUser(id){
-        $.ajax({
-            url: location.origin + '/notification/remove?id=' + id,
-            method: 'GET',
-            success: function(response){
+    function deleteBarang(id){
+        let html = ''
+        Swal.fire({
+            title: "Ingin menghapus data?",
+            text: "Data akan dihapus dari tabel!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Hapus!"
+            }).then(async function(result) {
+            if (result.isConfirmed) {
+                let remove = await apiCaller('/api/stock-barang/delete/'+id)
+                if(remove.status == true){
+                    html = `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <div class="alert-body"><strong>Dihapus!</strong> ${remove.message}</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>`
+                }else{
+                    html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <div class="alert-body"><strong>Gagal dihapus!</strong> ${remove.message}</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>`
+                }
+                $('#alert-report').html(html)
                 tableBarang.ajax.reload()
-                console.log(response);
-            },
-            error: function(response){
-                console.log('error :'+ response);
             }
-        })
+        });
+
     }
 </script>
 @endsection

@@ -36,7 +36,7 @@ class UserController extends Controller
     function store(Request $request){
         try {
             if($request->iduser){
-                $user = User::firstWhere('id', $request->iduser);
+                $user = User::where('id', $request->iduser)->first();
             }else{
                 $user = new User();
                 $user->password = Hash::make('12345678');
@@ -54,7 +54,22 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
-                'message' => $th->getMessage()
+                'message' => 'Data gagal disimpan'
+            ]);
+        }
+    }
+
+    function delete($id){
+        try {
+            $user = User::where('id', $id)->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Data gagal dihapus'
             ]);
         }
     }

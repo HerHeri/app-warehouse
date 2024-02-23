@@ -33,6 +33,9 @@
                                 <div class="col-6 text-end">
                                     <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" onclick="creditUser()">Tambah User</button>
                                 </div>
+                                <div class="col-12 mt-2">
+                                    <div class="demo-spacing-0" id="alert-report"></div>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -183,10 +186,10 @@
                 orderable: false,
                 className: 'text-center',
                 render: (data, type, row, meta) => {
-                    let btnremove = `<button class="btn btn-primary btn-sm d-flex" onclick="removeUser('${row.id}')"><i class="fa fa-trash" style="font-size: 28px;"></i> <span> Remove</span></button>`
-                    let btncredit = `<button onclick="creditUser('${row.id}')" class="btn btn-success btn-sm d-flex"><i class="fa fa-eye" style="font-size: 28px;"></i><span> Edit</span></button>`
+                    let btnremove = `<button class="btn btn-danger btn-sm d-flex" onclick="deleteUser('${row.id}')"><i class="fa fa-trash" style="font-size: 28px;"></i> <span> Remove</span></button>`
+                    let btncredit = `<button onclick="creditUser('${row.id}')" class="btn btn-success btn-sm d-flex me-1"><i class="fa fa-eye" style="font-size: 28px;"></i><span> Edit</span></button>`
                     return `<div class="d-flex justify-content-center">
-                            ${btnremove} ${btncredit}
+                        ${btncredit} ${btnremove}
                         </div>`
                 }
             }
@@ -212,6 +215,7 @@
                 `<h1 class="mb-1">Create User</h1>
                 <p>Creating user details.</p>`
             )
+            $('#iduser').val('')
             $('#creditUserForm')[0].reset()
             $('#emailuser').removeAttr('readonly', 'readonly')
             $('#creditUser').modal('show')
@@ -228,20 +232,47 @@
             'emailuser' : $('#emailuser').val()
         }
         let submitUser = await apiCaller('/api/users/store', 'POST', data)
+        if(submitUser.status == true){
+            html = `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <div class="alert-body"><strong>Disimpan!</strong> ${submitUser.message}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`
+        }else{
+            html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div class="alert-body"><strong>Gagal!</strong> ${submitUser.message}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`
+        }
         $('#creditUser').modal('hide')
         tableUsers.ajax.reload()
+        $('#alert-report').html(html)
     })
 
-    function removeUser(id){
-        $.ajax({
-            url: location.origin + '/notification/remove?id=' + id,
-            method: 'GET',
-            success: function(response){
-                tableUsers.ajax.reload()
-                console.log(response);
-            },
-            error: function(response){
-                console.log('error :'+ response);
+    function deleteUser(id){
+        let html = ''
+        Swal.fire({
+            title: "Ingin menghapus data?",
+            text: "Data akan dihapus dari tabel!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Hapus!"
+            }).then(async function(result) {
+            if (result.isConfirmed) {
+                let remove = await apiCaller('/api/users/delete/'+id)
+                if(remove.status == true){
+                    html = `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <div class="alert-body"><strong>Dihapus!</strong> ${remove.message}</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>`
+                }else{
+                    html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <div class="alert-body"><strong>Gagal dihapus!</strong> ${remove.message}</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>`
+                }
+                $('#alert-report').html(html)
             }
         })
     }

@@ -39,6 +39,7 @@
     {{-- <link rel="stylesheet" type="text/css" href="{{ url('/') }}/app-assets/css/plugins/charts/chart-apex.css"> --}}
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/app-assets/css/plugins/extensions/ext-component-toastr.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/themes@5.0.16/default/default.css" rel="stylesheet">
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
@@ -74,6 +75,7 @@
     <script src="{{ url('/') }}/global.js"></script>
     {{-- <script src="{{ url('/') }}/app-assets/js/scripts/pages/dashboard-ecommerce.js"></script> --}}
     <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <!-- END: Page JS-->
 
     <script>

@@ -48,7 +48,7 @@ async function userAuth(req) {
         let me = await apiCaller('/api/me');
         return me
     } catch (error) {
-        alert(error)
+        return 'belum login';
     }
 }
 

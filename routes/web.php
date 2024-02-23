@@ -25,16 +25,10 @@ Route::middleware(['myauth'])->group(function () {
 
     Route::prefix('users')->name('users')->group(function(){
         Route::get('/', [UserController::class, 'index']);
-        Route::get('/credit', [UserController::class, 'credit'])->name('.credit');
-        Route::post('/store', [UserController::class, 'store'])->name('.store');
-        Route::any('/delete', [UserController::class, 'delete'])->name('.delete');
     });
 
     Route::prefix('stock-barang')->name('stock-barang')->group(function(){
         Route::get('/', [BarangController::class, 'index']);
-        Route::get('/credit', [BarangController::class, 'credit'])->name('.credit');
-        Route::post('/store', [BarangController::class, 'store'])->name('.store');
-        Route::any('/delete', [BarangController::class, 'delete'])->name('.delete');
     });
 
     Route::get('logout', [AuthController::class, 'logout']);
