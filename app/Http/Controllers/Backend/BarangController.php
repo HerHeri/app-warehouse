@@ -32,6 +32,21 @@ class BarangController extends Controller
         }
     }
 
+    public static function getBarang(){
+        try {
+            $barang = Listbarang::get();
+            return response()->json([
+                'status' => true,
+                'data' => $barang
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
     function store(Request $request){
         try {
             if($request->idbarang){

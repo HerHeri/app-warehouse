@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\Frontend\BarangController;
+use App\Http\Controllers\Frontend\FormbarangController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\RoleController;
 use App\Http\Controllers\Frontend\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +31,14 @@ Route::middleware(['myauth'])->group(function () {
 
     Route::prefix('stock-barang')->name('stock-barang')->group(function(){
         Route::get('/', [BarangController::class, 'index']);
+    });
+
+    Route::prefix('form-masuk')->name('form-masuk')->group(function(){
+        Route::get('/', [FormbarangController::class, 'formMasuk']);
+    });
+
+    Route::prefix('form-keluar')->name('form-keluar')->group(function(){
+        Route::get('/', [FormbarangController::class, 'formKeluar']);
     });
 
     Route::get('logout', [AuthController::class, 'logout']);

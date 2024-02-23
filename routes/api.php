@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\BarangController;
+use App\Http\Controllers\Backend\FormbarangController;
 use App\Http\Controllers\Backend\HomeController;
+use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,8 +50,24 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('stock-barang')->name('stock-barang')->group(function(){
         Route::get('/', [BarangController::class, 'index']);
         Route::post('/store', [BarangController::class, 'store'])->name('.store');
+        Route::get('/get-barang', [BarangController::class, 'getBarang'])->name('.get-barang');
         Route::get('/credit/{id}', [BarangController::class, 'credit'])->name('.credit');
         Route::any('/delete/{id}', [BarangController::class, 'delete'])->name('.delete');
+    });
+
+    Route::prefix('form-barang')->name('form-barang')->group(function(){
+        Route::prefix('/masuk')->name('.masuk')->group(function(){
+            Route::get('/', [FormbarangController::class, 'formMasuk']);
+            Route::post('/store', [FormbarangController::class, 'store'])->name('.store');
+            Route::get('/credit/{id}', [FormbarangController::class, 'credit'])->name('.credit');
+            Route::any('/delete/{id}', [FormbarangController::class, 'delete'])->name('.delete');
+        });
+        Route::prefix('/keluar')->name('.keluar')->group(function(){
+            Route::get('/', [FormbarangController::class, 'formKeluar']);
+            Route::post('/store', [FormbarangController::class, 'store'])->name('.store');
+            Route::get('/credit/{id}', [FormbarangController::class, 'credit'])->name('.credit');
+            Route::any('/delete/{id}', [FormbarangController::class, 'delete'])->name('.delete');
+        });
     });
 
     Route::get('logout', [AuthController::class, 'actionLogout']);

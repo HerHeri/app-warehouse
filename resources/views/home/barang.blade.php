@@ -66,7 +66,7 @@
 
 @include('layouts.footer')
 
-<!-- Credit Modal users -->
+<!-- Credit Modal Barang -->
 <div class="modal fade" id="creditBarang" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-edit-user">
         <div class="modal-content p-2">
@@ -270,7 +270,6 @@
                 tableBarang.ajax.reload()
             }
         });
-
     }
 </script>
 @endsection
